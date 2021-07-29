@@ -19,3 +19,8 @@ addresses = s.Table(
 class Address(pydantic.BaseModel):
     id: str
     user_id: str
+
+
+class AddressRequest(pydantic.BaseModel):
+    id: str
+    user_id: str

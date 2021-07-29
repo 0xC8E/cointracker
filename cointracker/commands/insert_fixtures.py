@@ -43,6 +43,7 @@ btc_addresses = [
 
 
 async def clear_data():
+    await db.conn.execute(transaction.transactions.delete())
     await db.conn.execute(address.addresses.delete())
     await db.conn.execute(user.users.delete())
 
