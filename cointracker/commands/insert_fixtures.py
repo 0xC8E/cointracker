@@ -1,9 +1,12 @@
 import asyncio
+import decimal
+import random
 import uuid
 
 from cointracker.app.data import db
 from cointracker.app.address import models as address
 from cointracker.app.user import models as user
+from cointracker.app.transaction import models as transaction
 
 btc_addresses = [
     "34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo",
@@ -53,6 +56,20 @@ async def insert_data():
         a_query = address.addresses.insert().values(id=a, user_id=str(uid))
         await db.conn.execute(u_query)
         await db.conn.execute(a_query)
+
+        transaction_queries = []
+        for _ in range(10):
+            amount = decimal.Decimal(random.randrange(150, 400)) / 100
+            transaction_type = random.choice(["in", "out"])
+            t_query = transaction.transactions.insert().values(
+                id=str(uuid.uuid4()),
+                address_id=a,
+                transaction_type=transaction_type,
+                amount=amount,
+            )
+            transaction_queries.append(db.conn.execute(t_query))
+
+        await asyncio.gather(*tuple(transaction_queries))
 
 
 async def run():
